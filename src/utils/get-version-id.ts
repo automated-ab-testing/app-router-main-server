@@ -1,8 +1,9 @@
+import { cache } from "react";
 import { sample } from "lodash";
 
 import { db } from "~/server/db";
 
-export default async function getVersionId() {
+const getVersionId = cache(async () => {
   const versionId = await db.$transaction(async (tx) => {
     const activeTests = await tx.test.findMany({
       where: {
@@ -35,4 +36,6 @@ export default async function getVersionId() {
   });
 
   return versionId;
-}
+});
+
+export default getVersionId;
