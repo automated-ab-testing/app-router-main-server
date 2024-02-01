@@ -3,23 +3,21 @@ import { sample } from "lodash";
 import { db } from "~/server/db";
 
 export default async function getVersionId() {
-  const activeTests = await db.test.findMany({
-    where: {
-      isActive: true,
-    },
-    select: {
-      id: true,
-    },
-  });
+  const versionId = await db.$transaction(async (tx) => {
+    const activeTests = await tx.test.findMany({
+      where: {
+        isActive: true,
+      },
+      select: {
+        id: true,
+      },
+    });
 
-  const randomTest = sample(activeTests);
+    const randomTest = sample(activeTests);
 
-    if (!randomTest)
-      return {
-        id: null,
-      };
+    if (!randomTest) return null;
 
-    const versions = await db.version.findMany({
+    const versions = await tx.version.findMany({
       where: {
         testId: randomTest.id,
       },
@@ -31,10 +29,10 @@ export default async function getVersionId() {
     // NOTE: Distribusi peluang dapat diubah dengan menggunakan HMM
     const randomVersion = sample(versions);
 
-    if (!randomVersion)
-      return {
-        id: null,
-      };
+    if (!randomVersion) return null;
 
-    return randomVersion;
+    return randomVersion.id;
+  });
+
+  return versionId;
 }
