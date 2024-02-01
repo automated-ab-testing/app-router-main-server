@@ -1,29 +1,31 @@
-import { Card, CardBody, CardHeader, Divider } from "@nextui-org/react";
+import { Button } from "@nextui-org/react";
 
-import getVersionId from "~/utils/get-version-id";
+import TestWrapper from "~/wrappers/TestWrapper";
+import VersionWrapper from "~/wrappers/VersionWrapper";
 
 export default async function HomePage() {
-  // Get Version ID
-  const versionId = await getVersionId();
-
   return (
     <main className="flex min-h-screen flex-col items-center justify-center gap-8 py-2">
-      {/* Display Version ID */}
-      <Card>
-        <CardHeader>
-          <p className="text-md">Version ID</p>
-        </CardHeader>
-        <Divider />
-        {versionId === null ? (
-          <CardBody>
-            <p>There is no active test!</p>
-          </CardBody>
-        ) : (
-          <CardBody>
-            <p>{versionId}</p>
-          </CardBody>
+      <TestWrapper
+        render={({ versionId }) => (
+          <>
+            <VersionWrapper
+              domId="first-button"
+              versionId={versionId}
+              render={({ className }) => (
+                <Button className={className}>First Button</Button>
+              )}
+            />
+            <VersionWrapper
+              domId="second-button"
+              versionId={versionId}
+              render={({ className }) => (
+                <Button className={className}>Second Button</Button>
+              )}
+            />
+          </>
         )}
-      </Card>
+      />
     </main>
   );
 }
