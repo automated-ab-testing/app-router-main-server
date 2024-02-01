@@ -6,7 +6,7 @@ export default async function VersionWrapper({
   render,
 }: {
   domId: string;
-  versionId: string | null; // Passed from TestWrapper (TODO: Find a better way to do this)
+  versionId: string | null; // Passed from TestWrapper
   render: (props: { className: string }) => React.ReactElement;
 }) {
   // If there is no active test, return a hidden element
@@ -15,7 +15,7 @@ export default async function VersionWrapper({
       className: "hidden",
     });
 
-  const className = await getComponentStyle(domId, versionId);
+  const className = await getComponentStyle({ domId, versionId });
 
   // If there is no style for this component, return a hidden element
   if (!className)
