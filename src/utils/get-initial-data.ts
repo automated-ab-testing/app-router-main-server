@@ -3,8 +3,8 @@ import { sample } from "lodash";
 
 import { db } from "~/server/db";
 
-const getVersionId = cache(async () => {
-  const versionId = await db.$transaction(async (tx) => {
+const getInitialData = cache(async () => {
+  const data = await db.$transaction(async (tx) => {
     // Get all active tests
     const activeTests = await tx.test.findMany({
       where: {
@@ -36,22 +36,42 @@ const getVersionId = cache(async () => {
 
     if (!randomVersion) return null;
 
-    // Increment the version's impression count
-    const updatedVersion = await tx.version.update({
+    // Get all styles of the selected version
+    const styles = await tx.style.findMany({
       where: {
-        id: randomVersion.id,
+        versionId: randomVersion.id,
       },
-      data: {
-        numberOfImpressions: {
-          increment: 1,
+      select: {
+        className: true,
+        component: {
+          select: {
+            domId: true,
+          },
         },
       },
     });
 
-    return updatedVersion.id;
+    // Pivot the styles
+    const pivot = styles.reduce(
+      (acc, curr) => {
+        const { component, className } = curr;
+        const { domId } = component;
+
+        acc[domId] = className;
+
+        return acc;
+      },
+      {} as Record<string, string>,
+    );
+
+    // Return all data
+    return {
+      versionId: randomVersion.id,
+      styles: pivot,
+    };
   });
 
-  return versionId;
+  return data;
 });
 
-export default getVersionId;
+export default getInitialData;

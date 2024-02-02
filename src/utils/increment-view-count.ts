@@ -4,8 +4,7 @@ import { z } from "zod";
 
 import { db } from "~/server/db";
 
-// TODO: Add a rate limit to this function
-const incrementClickCount = async (args: { versionId: string }) => {
+const incrementViewCount = async (args: { versionId: string }) => {
   // Define the schema for the arguments
   const schema = z.object({
     versionId: z.string().uuid(),
@@ -20,17 +19,17 @@ const incrementClickCount = async (args: { versionId: string }) => {
   // Get the arguments
   const { versionId } = parsed.data;
 
-  // Increment the click count
+  // Increment the view count
   await db.version.update({
     where: {
       id: versionId,
     },
     data: {
-      numberOfClicks: {
+      numberOfImpressions: {
         increment: 1,
       },
     },
   });
 };
 
-export default incrementClickCount;
+export default incrementViewCount;

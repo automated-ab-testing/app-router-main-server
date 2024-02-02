@@ -1,47 +1,18 @@
 import { Button } from "@nextui-org/react";
 
-import TestWrapper from "~/wrappers/TestWrapper";
-import VersionWrapper from "~/wrappers/VersionWrapper";
-import incrementClickCount from "~/utils/increment-click-count";
+import ExperimentWrapper from "~/wrappers/ExperimentWrapper";
 
 export default async function HomePage() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-center gap-8 py-2">
-      <TestWrapper
-        render={({ versionId }) => (
+      <ExperimentWrapper
+        renderDefault={() => (
+          <Button className="bg-green-500">Default Button</Button>
+        )}
+        renderTest={({ styles }) => (
           <>
-            <VersionWrapper
-              domId="first-button"
-              versionId={versionId}
-              render={({ className }) =>
-                versionId ? (
-                  <form action={incrementClickCount}>
-                    <input type="hidden" name="versionId" value={versionId} />
-                    <Button className={className} type="submit">
-                      First Button
-                    </Button>
-                  </form>
-                ) : (
-                  <Button className={className}>First Button</Button>
-                )
-              }
-            />
-            <VersionWrapper
-              domId="second-button"
-              versionId={versionId}
-              render={({ className }) =>
-                versionId ? (
-                  <form action={incrementClickCount}>
-                    <input type="hidden" name="versionId" value={versionId} />
-                    <Button className={className} type="submit">
-                      Second Button
-                    </Button>
-                  </form>
-                ) : (
-                  <Button className={className}>Second Button</Button>
-                )
-              }
-            />
+            <Button className={styles["first-button"]}>First Button</Button>
+            <Button className={styles["second-button"]}>Second Button</Button>
           </>
         )}
       />
