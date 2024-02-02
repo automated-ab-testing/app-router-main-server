@@ -1,7 +1,6 @@
 import { Button } from "@nextui-org/react";
 
 import ExperimentWrapper from "~/wrappers/ExperimentWrapper";
-import ClientWrapper from "~/wrappers/ClientWrapper";
 import DisplayVersion from "~/components/DisplayVersion";
 
 export default function HomePage() {
@@ -12,8 +11,11 @@ export default function HomePage() {
         renderDefault={() => (
           <Button className="bg-green-500">Default Button</Button>
         )}
-        renderTest={({ versionId, styles }) => (
-          <ClientWrapper versionId={versionId} styles={styles} />
+        renderTest={({ styles }) => (
+          <>
+            <Button className={styles["first-button"]}>First Button</Button>
+            <Button className={styles["second-button"]}>Second Button</Button>
+          </>
         )}
       />
     </main>
