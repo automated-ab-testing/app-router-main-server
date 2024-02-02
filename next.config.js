@@ -5,6 +5,9 @@
 await import("./src/env.js");
 
 /** @type {import("next").NextConfig} */
-const config = {};
+const config = {
+  // React strict mode is disabled because it will call all asynchronous functions in "useEffect" hooks twice in development mode
+  reactStrictMode: false,
+};
 
 export default config;

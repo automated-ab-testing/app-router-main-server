@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { Toaster } from "react-hot-toast";
 
 import AppNavbar from "~/components/AppNavbar";
 
@@ -13,6 +14,7 @@ export default function RootTemplate({ children }: React.PropsWithChildren) {
     >
       <AppNavbar />
       {children}
+      <Toaster />
     </motion.div>
   );
 }

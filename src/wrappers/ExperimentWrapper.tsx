@@ -5,7 +5,10 @@ export default async function ExperimentWrapper({
   renderTest,
 }: {
   renderDefault: () => React.ReactElement;
-  renderTest: (props: { styles: Record<string, string> }) => React.ReactElement;
+  renderTest: (props: {
+    versionId: string;
+    styles: Record<string, string>;
+  }) => React.ReactElement;
 }) {
   // Get the initial data
   const data = await getInitialData();
@@ -14,7 +17,7 @@ export default async function ExperimentWrapper({
   if (!data) return renderDefault();
 
   // Unpack the data
-  const { styles } = data;
+  const { versionId, styles } = data;
 
-  return renderTest({ styles });
+  return renderTest({ versionId, styles });
 }
