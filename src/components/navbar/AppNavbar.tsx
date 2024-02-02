@@ -5,7 +5,7 @@ import {
   NavbarItem,
 } from "@nextui-org/react";
 
-import ThemeSwitcher from "~/components/ThemeSwitcher";
+import ThemeSwitcher from "~/components/navbar/ThemeSwitcher";
 
 export default function AppNavbar() {
   return (

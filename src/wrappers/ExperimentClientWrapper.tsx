@@ -6,7 +6,7 @@ import toast from "react-hot-toast";
 import incrementViewCount from "~/utils/increment-view-count";
 import incrementClickCount from "~/utils/increment-click-count";
 
-export default function ClientWrapper({
+export default function ExperimentClientWrapper({
   versionId,
   renderClient,
 }: {
@@ -19,35 +19,27 @@ export default function ClientWrapper({
 
   // Increment the view count on mount
   useEffect(() => {
-    // If the component has already displayed
     if (hasDisplayed) return;
 
-    // Set the hasDisplayed state to true
     setHasDisplayed(true);
 
-    // Call the incrementViewCount server action
     void incrementViewCount({ versionId }).catch(() => {
-      // If an error occurred, display a toast
-      toast.error("An error occurred on incrementing the view count."),
-        // Set the hasDisplayed state to false
-        setHasDisplayed(false);
+      toast.error("An error occurred on incrementing the view count.");
+
+      setHasDisplayed(false);
     });
   }, [hasDisplayed, versionId]);
 
+  // Render the client
   return renderClient({
     emitWin: () => {
-      // If the user has already won, return
       if (hasClicked) return;
 
-      // Set the hasClicked state to true
       setHasClicked(true);
 
-      // Call the incrementClickCount server action
       void incrementClickCount({ versionId }).catch(() => {
-        // If an error occurred, display a toast
         toast.error("An error occurred on incrementing the click count.");
 
-        // Set the hasClicked state to false
         setHasClicked(false);
       });
     },

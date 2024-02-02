@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import { Toaster } from "react-hot-toast";
 
-import AppNavbar from "~/components/AppNavbar";
+import AppNavbar from "~/components/navbar/AppNavbar";
 
 export default function RootTemplate({ children }: React.PropsWithChildren) {
   return (

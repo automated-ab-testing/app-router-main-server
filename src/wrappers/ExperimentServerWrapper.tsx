@@ -1,6 +1,6 @@
 import getInitialData from "~/utils/get-initial-data";
 
-export default async function ExperimentWrapper({
+export default async function ExperimentServerWrapper({
   renderDefault,
   renderTest,
 }: {
