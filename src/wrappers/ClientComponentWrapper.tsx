@@ -14,7 +14,7 @@ export default function ClientComponentWrapper({
   versionId: string;
   styles: Record<string, string>;
   renderClient: (props: {
-    getStyles: (domId: string) => string | undefined;
+    getStyles: (domId: string) => string;
     emitWin: () => void;
   }) => React.ReactElement;
 }) {
@@ -37,7 +37,7 @@ export default function ClientComponentWrapper({
 
   // Render the client
   return renderClient({
-    getStyles: (domId) => styles[domId],
+    getStyles: (domId) => styles[domId] ?? "hidden",
     emitWin: () => {
       if (hasClicked) return;
 
