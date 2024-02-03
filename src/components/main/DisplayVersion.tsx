@@ -3,6 +3,7 @@ import { Card, CardBody, CardHeader, Divider } from "@nextui-org/react";
 import getInitialData from "~/utils/get-initial-data";
 
 export default async function DisplayVersion() {
+  // Get the initial data (cached on the server)
   const data = await getInitialData();
 
   return (

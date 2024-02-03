@@ -2,9 +2,9 @@
 
 import { Button } from "@nextui-org/react";
 
-import ExperimentClientWrapper from "~/wrappers/ExperimentClientWrapper";
+import ClientComponentWrapper from "~/wrappers/ClientComponentWrapper";
 
-export default function ExperimentComponent({
+export default function ClientComponent({
   versionId,
   styles,
 }: {
@@ -12,7 +12,7 @@ export default function ExperimentComponent({
   styles: Record<string, string>;
 }) {
   return (
-    <ExperimentClientWrapper
+    <ClientComponentWrapper
       versionId={versionId}
       styles={styles}
       renderClient={({ getStyles, emitWin }) => (

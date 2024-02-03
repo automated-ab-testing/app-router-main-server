@@ -6,7 +6,7 @@ import toast from "react-hot-toast";
 import incrementViewCount from "~/utils/increment-view-count";
 import incrementClickCount from "~/utils/increment-click-count";
 
-export default function ExperimentClientWrapper({
+export default function ClientComponentWrapper({
   versionId,
   styles,
   renderClient,
