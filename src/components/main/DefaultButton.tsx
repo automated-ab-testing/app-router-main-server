@@ -3,12 +3,5 @@
 import { Button } from "@nextui-org/react";
 
 export default function DefaultButton() {
-  return (
-    <Button
-      className="bg-green-500"
-      onClick={() => console.log("DEFAULT BUTTON CLICKED")}
-    >
-      Default Button
-    </Button>
-  );
+  return <Button className="bg-green-500">Default Button</Button>;
 }
