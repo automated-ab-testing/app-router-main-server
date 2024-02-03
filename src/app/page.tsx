@@ -10,6 +10,7 @@ export default function HomePage() {
       <DisplayVersion />
       <ExperimentServerWrapper
         renderDefault={() => <DefaultButton />}
+        // Pass the versionId and styles from server to client using props (must be serializable)
         renderTest={({ versionId, styles }) => (
           <ExperimentComponent versionId={versionId} styles={styles} />
         )}

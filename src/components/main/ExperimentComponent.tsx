@@ -14,12 +14,13 @@ export default function ExperimentComponent({
   return (
     <ExperimentClientWrapper
       versionId={versionId}
-      renderClient={({ emitWin }) => (
+      styles={styles}
+      renderClient={({ getStyles, emitWin }) => (
         <>
-          <Button className={styles["first-button"]} onClick={emitWin}>
+          <Button className={getStyles("first-button")} onClick={emitWin}>
             First Button
           </Button>
-          <Button className={styles["second-button"]} onClick={emitWin}>
+          <Button className={getStyles("second-button")} onClick={emitWin}>
             Second Button
           </Button>
         </>

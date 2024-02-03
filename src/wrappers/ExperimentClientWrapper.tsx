@@ -8,10 +8,15 @@ import incrementClickCount from "~/utils/increment-click-count";
 
 export default function ExperimentClientWrapper({
   versionId,
+  styles,
   renderClient,
 }: {
   versionId: string;
-  renderClient: (props: { emitWin: () => void }) => React.ReactElement;
+  styles: Record<string, string>;
+  renderClient: (props: {
+    getStyles: (domId: string) => string | undefined;
+    emitWin: () => void;
+  }) => React.ReactElement;
 }) {
   // Define the state
   const [hasDisplayed, setHasDisplayed] = useState(false);
@@ -32,6 +37,7 @@ export default function ExperimentClientWrapper({
 
   // Render the client
   return renderClient({
+    getStyles: (domId) => styles[domId],
     emitWin: () => {
       if (hasClicked) return;
 
