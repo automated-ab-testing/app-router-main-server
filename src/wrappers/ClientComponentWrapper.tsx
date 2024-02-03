@@ -1,8 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import toast from "react-hot-toast";
-
 import incrementViewCount from "~/utils/increment-view-count";
 import incrementClickCount from "~/utils/increment-click-count";
 
@@ -29,8 +27,6 @@ export default function ClientComponentWrapper({
     setHasDisplayed(true);
 
     void incrementViewCount({ versionId }).catch(() => {
-      toast.error("An error occurred on incrementing the view count.");
-
       setHasDisplayed(false);
     });
   }, [hasDisplayed, versionId]);
@@ -44,8 +40,6 @@ export default function ClientComponentWrapper({
       setHasClicked(true);
 
       void incrementClickCount({ versionId }).catch(() => {
-        toast.error("An error occurred on incrementing the click count.");
-
         setHasClicked(false);
       });
     },
