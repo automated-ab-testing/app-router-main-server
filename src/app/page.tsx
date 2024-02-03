@@ -1,6 +1,6 @@
 import ExperimentServerWrapper from "~/wrappers/ExperimentServerWrapper";
 
-import DisplayVersion from "~/components/navbar/DisplayVersion";
+import DisplayVersion from "~/components/main/DisplayVersion";
 import DefaultButton from "~/components/main/DefaultButton";
 import ExperimentComponent from "~/components/main/ExperimentComponent";
 
