@@ -2,7 +2,6 @@
 
 import { db } from "~/server/db";
 
-// TODO: Add a rate limit to this function
 const incrementClickCount = async (args: { versionId: string }) => {
   const { versionId } = args;
 
