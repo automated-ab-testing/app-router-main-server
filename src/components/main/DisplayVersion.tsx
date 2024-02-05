@@ -4,7 +4,7 @@ import getInitialData from "~/utils/get-initial-data";
 
 export default async function DisplayVersion() {
   // Get the initial data (cached on the server)
-  const data = await getInitialData();
+  const { versionId } = await getInitialData();
 
   return (
     <Card>
@@ -13,7 +13,7 @@ export default async function DisplayVersion() {
       </CardHeader>
       <Divider />
       <CardBody>
-        {data ? <p>{data.versionId}</p> : <p>There is no active test!</p>}
+        {versionId ? <p>{versionId}</p> : <p>There is no active test!</p>}
       </CardBody>
     </Card>
   );

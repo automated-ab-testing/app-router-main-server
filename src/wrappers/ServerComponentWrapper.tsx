@@ -11,13 +11,10 @@ export default async function ServerComponentWrapper({
   }) => React.ReactElement;
 }) {
   // Get the initial data (cached on the server)
-  const data = await getInitialData();
+  const { versionId, styles } = await getInitialData();
 
   // If there is no data, return the default render
-  if (!data) return renderDefault();
-
-  // Unpack the data
-  const { versionId, styles } = data;
+  if (!versionId) return renderDefault();
 
   return renderTest({ versionId, styles });
 }
