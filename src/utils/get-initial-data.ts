@@ -3,9 +3,21 @@ import "server-only";
 import { cache } from "react";
 import { sample } from "lodash";
 
+import { getServerAuthSession } from "~/server/auth";
 import { db } from "~/server/db";
 
 const getInitialData = cache(async () => {
+  // Get the server session
+  const session = await getServerAuthSession();
+
+  // If the user is not authenticated, return
+  if (!session || !session.user)
+    return {
+      versionId: null,
+      styles: null,
+    };
+
+  // Get all data
   const data = await db.$transaction(async (tx) => {
     // Get all active tests
     const activeTests = await tx.test.findMany({
