@@ -8,7 +8,9 @@ export default function Providers({ children }: React.PropsWithChildren) {
   return (
     <SessionProvider>
       <NextUIProvider>
-        <NextThemesProvider attribute="class">{children}</NextThemesProvider>
+        <NextThemesProvider attribute="class" defaultTheme="light">
+          {children}
+        </NextThemesProvider>
       </NextUIProvider>
     </SessionProvider>
   );
