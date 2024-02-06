@@ -20,9 +20,11 @@ export default async function HomePage() {
             renderDefault={() => (
               <Button className="bg-green-500">Default Button</Button>
             )}
-            // Pass the versionId and styles from server to client using props (must be serializable)
-            renderTest={({ versionId, styles }) => (
-              <ClientComponent versionId={versionId} styles={styles} />
+            renderTest={({ versionId, featureFlags }) => (
+              <ClientComponent
+                versionId={versionId}
+                featureFlags={featureFlags}
+              />
             )}
           />
         </>

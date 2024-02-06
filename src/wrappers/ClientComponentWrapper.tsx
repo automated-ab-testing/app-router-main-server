@@ -1,47 +1,31 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import incrementViewCount from "~/utils/increment-view-count";
 import incrementClickCount from "~/utils/increment-click-count";
 
 export default function ClientComponentWrapper({
   versionId,
-  styles,
+  featureFlags,
   renderClient,
 }: {
   versionId: string;
-  styles: Record<string, string>;
+  featureFlags: Record<string, boolean>;
   renderClient: (props: {
-    getStyles: (domId: string) => string;
+    getDisplayStatus: (domId: string) => boolean;
     emitWin: () => void;
   }) => React.ReactElement;
 }) {
-  // Define the state
-  const [hasDisplayed, setHasDisplayed] = useState(false);
-  const [hasClicked, setHasClicked] = useState(false);
-
   // Increment the view count on mount
   useEffect(() => {
-    if (hasDisplayed) return;
-
-    setHasDisplayed(true);
-
-    void incrementViewCount({ versionId }).catch(() => {
-      setHasDisplayed(false);
-    });
-  }, [hasDisplayed, versionId]);
+    void incrementViewCount({ versionId });
+  }, [versionId]);
 
   // Render the client
   return renderClient({
-    getStyles: (domId) => styles[domId] ?? "hidden",
+    getDisplayStatus: (domId) => featureFlags[domId] ?? false,
     emitWin: () => {
-      if (hasClicked) return;
-
-      setHasClicked(true);
-
-      void incrementClickCount({ versionId }).catch(() => {
-        setHasClicked(false);
-      });
+      void incrementClickCount({ versionId });
     },
   });
 }

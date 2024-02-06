@@ -6,23 +6,27 @@ import ClientComponentWrapper from "~/wrappers/ClientComponentWrapper";
 
 export default function ClientComponent({
   versionId,
-  styles,
+  featureFlags,
 }: {
   versionId: string;
-  styles: Record<string, string>;
+  featureFlags: Record<string, boolean>;
 }) {
   return (
     <ClientComponentWrapper
       versionId={versionId}
-      styles={styles}
-      renderClient={({ getStyles, emitWin }) => (
+      featureFlags={featureFlags}
+      renderClient={({ getDisplayStatus, emitWin }) => (
         <>
-          <Button className={getStyles("first-button")} onClick={emitWin}>
-            First Button
-          </Button>
-          <Button className={getStyles("second-button")} onClick={emitWin}>
-            Second Button
-          </Button>
+          {getDisplayStatus("first-button") && (
+            <Button className="bg-red-500" onClick={emitWin}>
+              First Button
+            </Button>
+          )}
+          {getDisplayStatus("second-button") && (
+            <Button className="bg-purple-500" onClick={emitWin}>
+              Second Button
+            </Button>
+          )}
         </>
       )}
     />

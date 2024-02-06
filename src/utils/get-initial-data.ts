@@ -14,10 +14,9 @@ const getInitialData = cache(async () => {
   if (!session || !session.user)
     return {
       versionId: null,
-      styles: null,
+      featureFlags: {} as Record<string, boolean>,
     };
 
-  // Get all data
   const data = await db.$transaction(async (tx) => {
     // Get all active tests
     const activeTests = await tx.test.findMany({
@@ -35,7 +34,7 @@ const getInitialData = cache(async () => {
     if (!randomTest)
       return {
         versionId: null,
-        styles: null,
+        featureFlags: {} as Record<string, boolean>,
       };
 
     // Get all versions of the selected test
@@ -55,16 +54,16 @@ const getInitialData = cache(async () => {
     if (!randomVersion)
       return {
         versionId: null,
-        styles: null,
+        featureFlags: {} as Record<string, boolean>,
       };
 
-    // Get all styles of the selected version
-    const styles = await tx.style.findMany({
+    // Get all feature flags of the selected version
+    const featureFlags = await tx.featureFlag.findMany({
       where: {
         versionId: randomVersion.id,
       },
       select: {
-        className: true,
+        isActive: true,
         component: {
           select: {
             domId: true,
@@ -73,23 +72,23 @@ const getInitialData = cache(async () => {
       },
     });
 
-    // Pivot the styles
-    const pivot = styles.reduce(
+    // Pivot the feature flags
+    const pivot = featureFlags.reduce(
       (acc, curr) => {
-        const { component, className } = curr;
+        const { component, isActive } = curr;
         const { domId } = component;
 
-        acc[domId] = className;
+        acc[domId] = isActive;
 
         return acc;
       },
-      {} as Record<string, string>,
+      {} as Record<string, boolean>,
     );
 
     // Return all data
     return {
       versionId: randomVersion.id,
-      styles: pivot,
+      featureFlags: pivot,
     };
   });
 

@@ -7,14 +7,14 @@ export default async function ServerComponentWrapper({
   renderDefault: () => React.ReactElement;
   renderTest: (props: {
     versionId: string;
-    styles: Record<string, string>;
+    featureFlags: Record<string, boolean>;
   }) => React.ReactElement;
 }) {
   // Get the initial data (cached on the server)
-  const { versionId, styles } = await getInitialData();
+  const { versionId, featureFlags } = await getInitialData();
 
   // If there is no data, return the default render
   if (!versionId) return renderDefault();
 
-  return renderTest({ versionId, styles });
+  return renderTest({ versionId, featureFlags });
 }
