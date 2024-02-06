@@ -21,7 +21,7 @@ const incrementViewCount = async (args: { versionId: string }) => {
         versionId_userId_type: {
           versionId,
           userId: session.user.id,
-          type: EventType.CLICK,
+          type: EventType.IMPRESSION,
         },
       },
     });
@@ -32,7 +32,7 @@ const incrementViewCount = async (args: { versionId: string }) => {
       data: {
         versionId,
         userId: session.user.id,
-        type: EventType.CLICK,
+        type: EventType.IMPRESSION,
       },
     });
   });
