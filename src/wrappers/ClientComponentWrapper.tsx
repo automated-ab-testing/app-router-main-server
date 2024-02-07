@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect } from "react";
-import incrementViewCount from "~/utils/increment-view-count";
-import incrementClickCount from "~/utils/increment-click-count";
+import incrementViewCount from "~/utils/user/increment-view-count";
+import incrementClickCount from "~/utils/user/increment-click-count";
 
 export default function ClientComponentWrapper({
   versionId,

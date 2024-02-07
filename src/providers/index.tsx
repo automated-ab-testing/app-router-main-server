@@ -3,11 +3,14 @@
 import { SessionProvider } from "next-auth/react";
 import { NextUIProvider } from "@nextui-org/react";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
+import { useRouter } from "next/navigation";
 
 export default function Providers({ children }: React.PropsWithChildren) {
+  const router = useRouter();
+
   return (
     <SessionProvider>
-      <NextUIProvider>
+      <NextUIProvider navigate={void router.push}>
         <NextThemesProvider attribute="class" defaultTheme="light">
           {children}
         </NextThemesProvider>

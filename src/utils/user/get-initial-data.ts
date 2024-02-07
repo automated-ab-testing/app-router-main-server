@@ -2,6 +2,7 @@ import "server-only";
 
 import { cache } from "react";
 import { sample } from "lodash";
+import { UserRole } from "@prisma/client";
 
 import { getServerAuthSession } from "~/server/auth";
 import { db } from "~/server/db";
@@ -10,14 +11,14 @@ const getInitialData = cache(async () => {
   // Get the server session
   const session = await getServerAuthSession();
 
-  // If the user is not authenticated, return
-  if (!session || !session.user)
+  // If the user is not authenticated or not a user, return empty data
+  if (!session || !session.user || session.user.role !== UserRole.USER)
     return {
       versionId: null,
       featureFlags: {} as Record<string, boolean>,
     };
 
-  const data = await db.$transaction(async (tx) => {
+  const { versionId, rawFeatureFlags } = await db.$transaction(async (tx) => {
     // Get all active tests
     const activeTests = await tx.test.findMany({
       where: {
@@ -34,7 +35,12 @@ const getInitialData = cache(async () => {
     if (!randomTest)
       return {
         versionId: null,
-        featureFlags: {} as Record<string, boolean>,
+        rawFeatureFlags: [] as {
+          component: {
+            domId: string;
+          };
+          isActive: boolean;
+        }[],
       };
 
     // Get all versions of the selected test
@@ -54,7 +60,12 @@ const getInitialData = cache(async () => {
     if (!randomVersion)
       return {
         versionId: null,
-        featureFlags: {} as Record<string, boolean>,
+        rawFeatureFlags: [] as {
+          component: {
+            domId: string;
+          };
+          isActive: boolean;
+        }[],
       };
 
     // Get all feature flags of the selected version
@@ -72,27 +83,30 @@ const getInitialData = cache(async () => {
       },
     });
 
-    // Pivot the feature flags
-    const pivot = featureFlags.reduce(
-      (acc, curr) => {
-        const { component, isActive } = curr;
-        const { domId } = component;
-
-        acc[domId] = isActive;
-
-        return acc;
-      },
-      {} as Record<string, boolean>,
-    );
-
     // Return all data
     return {
       versionId: randomVersion.id,
-      featureFlags: pivot,
+      rawFeatureFlags: featureFlags,
     };
   });
 
-  return data;
+  // Pivot the feature flag
+  const pivot = rawFeatureFlags.reduce(
+    (acc, curr) => {
+      const { component, isActive } = curr;
+      const { domId } = component;
+
+      acc[domId] = isActive;
+
+      return acc;
+    },
+    {} as Record<string, boolean>,
+  );
+
+  return {
+    versionId,
+    featureFlags: pivot,
+  };
 });
 
 export default getInitialData;

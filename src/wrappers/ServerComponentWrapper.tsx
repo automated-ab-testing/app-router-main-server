@@ -1,4 +1,4 @@
-import getInitialData from "~/utils/get-initial-data";
+import getInitialData from "~/utils/user/get-initial-data";
 
 export default async function ServerComponentWrapper({
   renderDefault,
