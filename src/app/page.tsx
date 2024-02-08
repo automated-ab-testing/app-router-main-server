@@ -12,11 +12,10 @@ export default async function HomePage({
 }: {
   searchParams: {
     test?: string;
-    version?: string;
   };
 }) {
   // Get the test and version from the searchParams
-  const { test, version } = searchParams;
+  const { test } = searchParams;
 
   // Get the server session
   const session = await getServerAuthSession();
@@ -26,7 +25,7 @@ export default async function HomePage({
       {!session || !session.user ? (
         <p className="text-xl">Login to continue!</p>
       ) : session.user.role === UserRole.ADMIN ? (
-        <DataCard test={test} version={version} />
+        <DataCard test={test} />
       ) : (
         <>
           <DisplayVersion />

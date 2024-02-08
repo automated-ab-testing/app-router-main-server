@@ -5,51 +5,30 @@ import {
   CardHeader,
   Divider,
 } from "@nextui-org/react";
-import { type EventType } from "@prisma/client";
 
 import getTestNames from "~/utils/admin/get-test-names";
-import getVersionLabels from "~/utils/admin/get-version-labels";
 import getAnalytics from "~/utils/admin/get-analytics";
 import SelectTest from "~/components/analytics/SelectTest";
-import SelectVersion from "~/components/analytics/SelectVersion";
 import BarChart from "~/components/analytics/BarChart";
 
-export default async function DataCard({
-  test,
-  version,
-}: {
-  test: string | undefined;
-  version: string | undefined;
-}) {
-  // Get the test names
-  const testNames = await getTestNames();
-
-  // Get the version labels
-  const versionLabels = test
-    ? await getVersionLabels({ testId: test })
-    : ([] as {
-        id: string;
-        label: string;
-      }[]);
-
-  // Get the analytics
-  const analytics = version
-    ? await getAnalytics({ versionId: version })
-    : ({} as Record<EventType, number>);
-
+export default async function DataCard({ test }: { test: string | undefined }) {
   return (
-    <Card className="w-96">
+    <Card className="h-1/2 min-h-96 w-1/2 min-w-96">
       <CardHeader>
         <p className="text-lg">A/B Testing Analytics</p>
       </CardHeader>
       <Divider />
-      <CardBody>
-        <BarChart analyticsData={analytics} />
+      {/* NOTE: Data tidak boleh kosong untuk dijalankan pada Chart */}
+      <CardBody className="items-center justify-center">
+        {test ? (
+          <BarChart analyticsData={await getAnalytics({ testId: test })} />
+        ) : (
+          <p className="text-lg">Please select a test!</p>
+        )}
       </CardBody>
       <Divider />
-      <CardFooter className="flex w-auto flex-row gap-2 py-2">
-        <SelectTest testQuery={test} testData={testNames} />
-        <SelectVersion versionQuery={version} versionData={versionLabels} />
+      <CardFooter>
+        <SelectTest testQuery={test} testData={await getTestNames()} />
       </CardFooter>
     </Card>
   );

@@ -1,44 +1,67 @@
 import "server-only";
 
 import { cache } from "react";
-import { UserRole, EventType } from "@prisma/client";
+import { EventType, UserRole } from "@prisma/client";
 
 import { getServerAuthSession } from "~/server/auth";
 import { db } from "~/server/db";
 
-const getAnalytics = cache(async (args: { versionId: string }) => {
+const getAnalytics = cache(async (args: { testId: string }) => {
   // Get the server session
   const session = await getServerAuthSession();
 
   // If the user is not authenticated or not an admin, return empty data
   if (!session || !session.user || session.user.role !== UserRole.ADMIN)
-    return {} as Record<EventType, number>;
+    return {} as Record<EventType, Record<string, number>>;
 
   // Get the testId from the args
-  const { versionId } = args;
+  const { testId } = args;
 
-  // Get all event logs of the selected version
-  const data = await db.eventLog.groupBy({
-    where: {
-      versionId,
-    },
-    by: ["type"],
-    _count: {
-      id: true,
-    },
+  // Get the analytics data
+  const { versions, countEvents } = await db.$transaction(async (tx) => {
+    const versions = await tx.version.findMany({
+      where: { testId },
+      select: { id: true, label: true },
+    });
+
+    const countEvents = await tx.eventLog.groupBy({
+      by: ["type", "versionId"],
+      where: {
+        version: {
+          testId,
+        },
+      },
+      _count: {
+        id: true,
+      },
+    });
+
+    return { versions, countEvents };
   });
 
-  // Pivot the data
-  const pivot = Object.values(EventType).reduce(
-    (acc, curr) => {
-      const datum = data.find((d) => d.type === curr);
+  // Pivot the data by type
+  const pivot = Object.values(EventType)
+    .flatMap((type) => versions.map((version) => ({ type, version })))
+    .reduce(
+      (acc, curr) => {
+        // Get the type and version
+        const { type, version } = curr;
 
-      acc[curr] = datum ? datum._count.id : 0;
+        // If the type is not in the accumulator, add it
+        if (!acc[type]) acc[type] = {} as Record<string, number>;
 
-      return acc;
-    },
-    {} as Record<EventType, number>,
-  );
+        // Find the count event
+        const foundEvent = countEvents.find(
+          (c) => c.type === type && c.versionId === version.id,
+        );
+
+        // Add the count to the accumulator
+        acc[type][version.label] = foundEvent ? foundEvent._count.id : 0;
+
+        return acc;
+      },
+      {} as Record<EventType, Record<string, number>>,
+    );
 
   return pivot;
 });
