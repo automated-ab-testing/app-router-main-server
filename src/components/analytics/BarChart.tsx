@@ -47,6 +47,9 @@ export default function BarChart({
     [],
   );
 
+  // If the data is empty, return a message.
+  if (data.length === 0) return <p className="text-lg">No data available!</p>;
+
   return (
     <Chart
       options={{
