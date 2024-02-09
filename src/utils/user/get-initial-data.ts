@@ -1,7 +1,7 @@
 import "server-only";
 
 import { cache } from "react";
-import { sample } from "lodash";
+import seedrandom from "seedrandom";
 import { UserRole } from "@prisma/client";
 
 import { getServerAuthSession } from "~/server/auth";
@@ -18,6 +18,9 @@ const getInitialData = cache(async () => {
       featureFlags: {} as Record<string, boolean>,
     };
 
+  // Define the seed for the random number generator
+  const rng = seedrandom(session.user.id);
+
   const { versionId, rawFeatureFlags } = await db.$transaction(async (tx) => {
     // Get all active tests
     const activeTests = await tx.test.findMany({
@@ -29,8 +32,21 @@ const getInitialData = cache(async () => {
       },
     });
 
-    // Randomly select one test
-    const randomTest = sample(activeTests);
+    // If there are no active tests, return empty data
+    if (activeTests.length === 0)
+      return {
+        versionId: null,
+        rawFeatureFlags: [] as {
+          component: {
+            domId: string;
+          };
+          isActive: boolean;
+        }[],
+      };
+
+    // Randomly select one active test (deterministically using the seed)
+    const randomTestIdx = rng.int32() % activeTests.length;
+    const randomTest = activeTests[randomTestIdx];
 
     if (!randomTest)
       return {
@@ -43,7 +59,7 @@ const getInitialData = cache(async () => {
         }[],
       };
 
-    // Get all versions of the selected test
+    // Get all versions in the active test
     const versions = await tx.version.findMany({
       where: {
         testId: randomTest.id,
@@ -53,9 +69,22 @@ const getInitialData = cache(async () => {
       },
     });
 
-    // Randomly select one version
+    // If there are no versions in the active test, return empty data
+    if (versions.length === 0)
+      return {
+        versionId: null,
+        rawFeatureFlags: [] as {
+          component: {
+            domId: string;
+          };
+          isActive: boolean;
+        }[],
+      };
+
+    // Randomly select one version in the active test (deterministically using the seed)
     // NOTE: Distribusi peluang dapat diubah dengan menggunakan HMM
-    const randomVersion = sample(versions);
+    const randomVersionIdx = rng.int32() % versions.length;
+    const randomVersion = versions[randomVersionIdx];
 
     if (!randomVersion)
       return {
