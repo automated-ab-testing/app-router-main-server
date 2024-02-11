@@ -3,14 +3,13 @@
 import { useMemo } from "react";
 import { type AxisOptions, type UserSerie, Chart } from "react-charts";
 import { useTheme } from "next-themes";
-import { type EventType } from "@prisma/client";
 
 type MyDatum = { version: string; amount: number };
 
 export default function BarChart({
   analyticsData,
 }: {
-  analyticsData: Record<EventType, Record<string, number>>;
+  analyticsData: Record<string, Record<string, number>>;
 }) {
   // Get the theme
   const { resolvedTheme } = useTheme();

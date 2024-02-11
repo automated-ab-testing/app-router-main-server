@@ -25,7 +25,7 @@ export default function ClientComponentWrapper({
   return renderClient({
     getDisplayStatus: (domId) => featureFlags[domId] ?? false,
     emitWin: () => {
-      void incrementClickCount({ versionId });
+      void incrementClickCount();
     },
   });
 }
